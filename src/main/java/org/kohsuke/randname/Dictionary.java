@@ -53,20 +53,32 @@ public class Dictionary {
 	 */
 	// TODO: extract file one method
 	public static Dictionary standardWordnetDictionary() {
+		return newDictionaryFromFiles("a.txt","n.txt");
+	}
+	
+	/**
+	 * Factory method to create dictionnary from file in the classPath 
+	 * 
+	 * @param adjectiveFile name of the adjective file
+	 * @param nounsFile name of the noun file
+	 * @return a well set up dictionary with the content of the two specified file
+	 */
+	public static Dictionary newDictionaryFromFiles(String adjectiveFile, String nounsFile) {
 		List<String> nouns = new ArrayList<String>();
 		List<String> adjectives = new ArrayList<String>();
 
 		try {
-			load("a.txt", adjectives);
-			load("n.txt", nouns);
+			load(adjectiveFile, adjectives);
+			load(nounsFile, nouns);
 			return new Dictionary(nouns, adjectives);
 
 		} catch (IOException e) {
 			throw new Error(
-					"Error occur when trying to build the wordnet dictionnary",
+					"Error occur when trying to build the dictionnary",
 					e);
 		}
 	}
+	
 
 	/**
 	 * Compute prime value to use for the dictionary
@@ -132,7 +144,7 @@ public class Dictionary {
 	 *            The list to be filled
 	 * @throws IOException
 	 */
-	// ¤maybe rename method And make signature send back the list
+	// ¤maybe rename method And make signature send back the list ¤ASK
 	private static void load(String ressourceName, List<String> list)
 			throws IOException {
 		BufferedReader r = new BufferedReader(
