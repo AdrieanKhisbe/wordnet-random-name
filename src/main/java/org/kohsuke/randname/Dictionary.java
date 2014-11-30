@@ -12,47 +12,63 @@ import java.util.List;
  * @author Kohsuke Kawaguchi
  */
 public class Dictionary {
+
 	private List<String> nouns;
 	private List<String> adjectives;
+	// TODO: separator
 
 	private final int prime;
 
-	public Dictionary(List<String> nouns, List<String> adjectives, int prime) {
+	// ¤maybe: not final anymore: to enable dictionary to be build.
+
+	public Dictionary(List<String> nouns, List<String> adjectives) {
 		this.nouns = nouns;
 		this.adjectives = adjectives;
-		this.prime = prime;
+		this.prime = computePrime();
 	}
 
-	public Dictionary(int prime) {
-		this.nouns = new ArrayList<String>();
-		this.adjectives = new ArrayList<String>();
-		this.prime = 23; // will be recomputed.
-	}
-
+	// MAYBE for dynamic dictoanry
 	// public Dictionary() {
-	// this();
+	// this.nouns = new ArrayList<String>();
+	// this.adjectives = new ArrayList<String>();
+	// this.prime = 23; // will be recomputed.
 	// }
 
 	// TODO Make it a factory method!
-	public Dictionary() {
+	/**
+	 * Factory method to create the standard Wordnet dictionary
+	 * 
+	 * @return Wordnet dictionary
+	 */
+	// TODO: extract file one method
+	public static Dictionary standardWordnetDictionary() {
+		List<String> nouns = new ArrayList<String>();
+		List<String> adjectives = new ArrayList<String>();
+		
 		try {
 			load("a.txt", adjectives);
 			load("n.txt", nouns);
-		} catch (IOException e) {
-			throw new Error(e);
-		}
+			return new Dictionary(nouns, adjectives);
 
-		// TODO: extract combo compute. (when updating a dictionary)
-		// for instance `recomputeCombo`
-		// TODO get understanding of what it's really
-		int combo = size();
+		} catch (IOException e) {
+			throw new Error(
+					"Error occur when trying to build the wordnet dictionnary",
+					e);
+		}
+	}
+
+	/**
+	 * Compute prime value to use for the dictionary
+	 */
+	private int computePrime() {
+		int combo = this.size();
 
 		int primeCombo = 2;
 		while (primeCombo <= combo) {
 			int nextPrime = primeCombo + 1;
 			primeCombo *= nextPrime;
 		}
-		prime = primeCombo + 1;
+		return primeCombo + 1;
 	}
 
 	/**
@@ -83,20 +99,32 @@ public class Dictionary {
 	public String word(int i) {
 		int a = i % adjectives.size();
 		int n = i / adjectives.size();
-		// MAYBE: cache value
+		// ¤MAYBE: cache value
 
 		// TODO see how to extract case logic
 		return adjectives.get(a) + "_" + nouns.get(n);
 	}
 
-	private void load(String name, List<String> col) throws IOException {
-		// TODO: make it static?
-		BufferedReader r = new BufferedReader(new InputStreamReader(getClass()
-				.getResourceAsStream(name), "US-ASCII"));
+	/**
+	 * Load list of word into provided list
+	 * 
+	 * @param ressourceName
+	 *            Name of the file containing the list of words
+	 * @param list
+	 *            The list to be filled
+	 * @throws IOException
+	 */
+	// ¤maybe rename method And make signature send back the list
+	private static void load(String ressourceName, List<String> list)
+			throws IOException {
+		BufferedReader r = new BufferedReader(
+				new InputStreamReader(
+						Dictionary.class.getResourceAsStream(ressourceName),
+						"US-ASCII"));
 		String line;
 		while ((line = r.readLine()) != null)
-			col.add(line);
+			list.add(line);
 	}
 
-	static final Dictionary INSTANCE = new Dictionary();
+	static final Dictionary INSTANCE = standardWordnetDictionary();
 }
