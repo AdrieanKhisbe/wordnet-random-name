@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class Dictionary {
 
-	private List<String> nouns;
-	private List<String> adjectives;
+	private final List<String> nouns;
+	private final List<String> adjectives;
 
 	/**
 	 * Case strategy used to format the expressions created by the dictionary
@@ -46,7 +46,6 @@ public class Dictionary {
 	// this.prime = 23; // will be recomputed.
 	// }
 
-	// TODO Make it a factory method!
 	/**
 	 * Factory method to create the standard Wordnet dictionary
 	 * 
@@ -109,12 +108,11 @@ public class Dictionary {
 	}
 
 	/**
-	 * Indexed based accès to the expressions (adjective + word) of the
-	 * dictionnary
+	 * Indexed based accès to the name (adjective + word) of the dictionnary
 	 * 
 	 * @param i
-	 *            index of the expression
-	 * @return the indexed expression
+	 *            index of the name
+	 * @return the indexed name
 	 */
 	// MAYBE: rename?
 	public String word(int i) {
@@ -149,8 +147,8 @@ public class Dictionary {
 	static final Dictionary INSTANCE = standardWordnetDictionary();
 
 	/**
-	 * Util interface to represent the case strategy to apply to form
-	 * the expression from adjective and nouns
+	 * Util interface to represent the case strategy to apply to form the
+	 * expression from adjective and nouns
 	 * 
 	 * @author Adriean
 	 *
@@ -194,6 +192,15 @@ public class Dictionary {
 			this.strategy = strategy;
 		}
 
+		/**
+		 * format the Name from the noun and the adjective
+		 * 
+		 * @param adjective
+		 *            the adjective to use
+		 * @param noun
+		 *            the noun
+		 * @return some stupid name
+		 */
 		public String combine(String adjective, String noun) {
 			return strategy.format(adjective, noun);
 		}
