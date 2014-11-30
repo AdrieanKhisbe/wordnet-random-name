@@ -15,7 +15,8 @@ public class Dictionary {
 
 	private List<String> nouns;
 	private List<String> adjectives;
-	// TODO: separator
+	
+	private Case currentCase = Case.SNAKE;
 
 	private final int prime;
 
@@ -44,7 +45,7 @@ public class Dictionary {
 	public static Dictionary standardWordnetDictionary() {
 		List<String> nouns = new ArrayList<String>();
 		List<String> adjectives = new ArrayList<String>();
-		
+
 		try {
 			load("a.txt", adjectives);
 			load("n.txt", nouns);
@@ -99,10 +100,9 @@ public class Dictionary {
 	public String word(int i) {
 		int a = i % adjectives.size();
 		int n = i / adjectives.size();
-		// ¤MAYBE: cache value
+		// ¤MAYBE: cache value if list are final
 
-		// TODO see how to extract case logic
-		return adjectives.get(a) + "_" + nouns.get(n);
+		return currentCase.combine(adjectives.get(a), adjectives.get(n));
 	}
 
 	/**
@@ -127,4 +127,44 @@ public class Dictionary {
 	}
 
 	static final Dictionary INSTANCE = standardWordnetDictionary();
+
+	interface CaseStrategy {
+		public String format(String adjective, String noun);
+	}
+	
+	public enum Case {
+		// MAYBE replace with two flag; capitalized and separator
+		SNAKE(new CaseStrategy() {
+			public String format(String adjective, String noun) {
+				return adjective + "_" + noun;
+			}
+		}),
+		CAMEL(new CaseStrategy() {
+			public String format(String adjective, String noun) {
+				return adjective.substring(0, 1).toUpperCase()
+						+ adjective.substring(1) + ""
+						+ noun.substring(0, 1).toUpperCase()
+						+ noun.substring(1);
+			}
+		}),
+		SPACE_CAMEL(new CaseStrategy() {
+			public String format(String adjective, String noun) {
+				return adjective.substring(0, 1).toUpperCase()
+						+ adjective.substring(1) + " "
+						+ noun.substring(0, 1).toUpperCase()
+						+ noun.substring(1);
+			}
+		});
+
+		CaseStrategy strategy;
+
+		private Case(CaseStrategy strategy) {
+			this.strategy = strategy;
+		}
+		
+		public String combine(String adjective, String noun){
+			return strategy.format(adjective, noun);
+		}
+	}
+
 }
