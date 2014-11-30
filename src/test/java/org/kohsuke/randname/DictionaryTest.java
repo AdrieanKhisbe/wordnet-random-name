@@ -34,4 +34,17 @@ public class DictionaryTest {
 		assertTrue("Snake case is working", d.word(42).contains("_"));
 
 	}
+	
+	@Test
+	public void spacedCamelCase() {
+		Dictionary d = Dictionary.standardWordnetDictionary();
+		d.setCurrentCase(Dictionary.Case.SPACE_CAMEL);
+		
+		String word = d.word(42);
+		assertTrue("Snake case is working", word.contains(" "));
+		String firstLetter = word.substring(0,1);
+		assertEquals("Start by capital letter", firstLetter, firstLetter.toUpperCase());
+		// ¤latter: use pattern
+
+	}
 }

@@ -15,9 +15,13 @@ public class Dictionary {
 
 	private List<String> nouns;
 	private List<String> adjectives;
-	
-	private Case currentCase = Case.SNAKE;
 
+	/**
+	 * Case strategy used to format the expressions created by the dictionary
+	 */
+	private Case currentCase;
+
+	// TODO: explain what is it used for
 	private final int prime;
 
 	// ¤maybe: not final anymore: to enable dictionary to be build.
@@ -26,6 +30,13 @@ public class Dictionary {
 		this.nouns = nouns;
 		this.adjectives = adjectives;
 		this.prime = computePrime();
+		this.currentCase = Case.SNAKE;
+	}
+
+	public Dictionary(List<String> nouns, List<String> adjectives,
+			Case caseStrategy) {
+		this(nouns, adjectives);
+		this.currentCase = caseStrategy;
 	}
 
 	// MAYBE for dynamic dictoanry
@@ -89,6 +100,14 @@ public class Dictionary {
 		return prime;
 	}
 
+	public Case getCurrentCase() {
+		return currentCase;
+	}
+
+	public void setCurrentCase(Case currentCase) {
+		this.currentCase = currentCase;
+	}
+
 	/**
 	 * Indexed based accès to the expressions (adjective + word) of the
 	 * dictionnary
@@ -97,6 +116,7 @@ public class Dictionary {
 	 *            index of the expression
 	 * @return the indexed expression
 	 */
+	// MAYBE: rename?
 	public String word(int i) {
 		int a = i % adjectives.size();
 		int n = i / adjectives.size();
@@ -128,26 +148,38 @@ public class Dictionary {
 
 	static final Dictionary INSTANCE = standardWordnetDictionary();
 
+	/**
+	 * Util interface to represent the case strategy to apply to form
+	 * the expression from adjective and nouns
+	 * 
+	 * @author Adriean
+	 *
+	 */
 	interface CaseStrategy {
 		public String format(String adjective, String noun);
 	}
-	
+
+	/**
+	 * Enum to capture the name of case pattern and associated case strategy to
+	 * use to format the messages
+	 * 
+	 * @author Adriean
+	 *
+	 */
 	public enum Case {
 		// MAYBE replace with two flag; capitalized and separator
 		SNAKE(new CaseStrategy() {
 			public String format(String adjective, String noun) {
 				return adjective + "_" + noun;
 			}
-		}),
-		CAMEL(new CaseStrategy() {
+		}), CAMEL(new CaseStrategy() {
 			public String format(String adjective, String noun) {
 				return adjective.substring(0, 1).toUpperCase()
 						+ adjective.substring(1) + ""
 						+ noun.substring(0, 1).toUpperCase()
 						+ noun.substring(1);
 			}
-		}),
-		SPACE_CAMEL(new CaseStrategy() {
+		}), SPACE_CAMEL(new CaseStrategy() {
 			public String format(String adjective, String noun) {
 				return adjective.substring(0, 1).toUpperCase()
 						+ adjective.substring(1) + " "
@@ -161,8 +193,8 @@ public class Dictionary {
 		private Case(CaseStrategy strategy) {
 			this.strategy = strategy;
 		}
-		
-		public String combine(String adjective, String noun){
+
+		public String combine(String adjective, String noun) {
 			return strategy.format(adjective, noun);
 		}
 	}
