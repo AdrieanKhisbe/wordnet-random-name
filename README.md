@@ -43,7 +43,7 @@ generate the same sequence of identifiers.
 
 The aim how this fork is to introduce some configurability: 
 - ability to generate name according different case scheme (camel, snake, etc)
-- possibility to use a custom dictionnary
+- possibility to use a custom dictionnary (to support other langues or create personalized one)
 - save the current (last send element)
 - maybe do some refactors on the way
 

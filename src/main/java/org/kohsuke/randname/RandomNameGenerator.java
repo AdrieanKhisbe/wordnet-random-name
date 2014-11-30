@@ -22,7 +22,10 @@ public class RandomNameGenerator {
     } 
     public synchronized String next() {
         Dictionary d = Dictionary.INSTANCE;
+        // TODO make it an instance variable
         pos = Math.abs(pos+d.getPrime()) % d.size();
+        // TODO: see what the prime is for?
+        
         return d.word(pos);
     }
 }
