@@ -120,7 +120,7 @@ public class Dictionary {
 		int n = i / adjectives.size();
 		// ¤MAYBE: cache value if list are final
 
-		return currentCase.combine(adjectives.get(a), adjectives.get(n));
+		return currentCase.combine(adjectives.get(a), nouns.get(n));
 	}
 
 	/**
